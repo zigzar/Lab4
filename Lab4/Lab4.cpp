@@ -118,28 +118,21 @@ void fixCase(string& str) {
 	{
 		ch = str[i];
 		if (
-			(ch >= 0x41) && (ch <= 0x5a) || //Проверка на буквы
-			(ch >= 0x61) && (ch <= 0x7a) ||
-			(ch >= 0xc0) && (ch <= 0xff)
-			) 
+			(firstDone == false) && //Если первая встреченная буква строчная
+			((ch >= 0x61) && (ch <= 0x7a) ||
+			(ch >= -32) && (ch <= -1))
+			)
 		{
-			if (
-				(firstDone == false) && //Если первая встреченная буква строчная
-				((ch >= 0x61) && (ch <= 0x7a) ||
-				(ch >= 0xe0) && (ch <= 0xff))
-				)
-			{
-				ch -= 32;
-				str[i] = ch;
-				firstDone == true;
-				continue;
-			}
-			if ((ch >= 0x41) && (ch <= 0x5a) || //Если буква заглавная
-				(ch >= 0xc0) && (ch <= 0xdf))
-			{
-				ch += 32;
-				str[i] = ch;
-			}
+			ch -= 32;
+			str[i] = ch;
+			firstDone = true;
+			continue;
+		}
+		if ((ch >= 0x41) && (ch <= 0x5a) || //Если буква заглавная
+			(ch >= -64) && (ch <= -33))
+		{
+			ch += 32;
+			str[i] = ch;
 		}
 	}
 }
@@ -159,6 +152,6 @@ int main()
 	menu(str);
 	cout << "Ваша строка:" << endl << str << endl << endl;
 	format(str);
-	cout << "Отформатировання строка:" << endl << str << endl;
+	cout << "Отформатированная строка:" << endl << str << endl;
 	system("pause");
 }
