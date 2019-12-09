@@ -61,7 +61,7 @@ int ans() {
 	return choice;
 }
 
-void menu(string &str)
+void menu(string& str)
 {
 	switch (ans())
 	{
@@ -80,10 +80,10 @@ string cutStr(string str) {
 	for (int i = 0, j = 0; i < size(str); i++, j++)
 	{
 		ch = str[i];
+		formattedStr += str[i];
 		if (ch == 0x2e) {
 			break;
 		}
-		formattedStr += str[i];
 	}
 	return formattedStr;
 }
@@ -128,6 +128,15 @@ void fixCase(string& str) {
 			firstDone = true;
 			continue;
 		}
+		if (
+			(firstDone == false) && //Если первая встреченная буква заглавная
+			((ch >= 0x41) && (ch <= 0x5a) ||
+			(ch >= -64) && (ch <= -33))
+			)
+		{
+			firstDone = true;
+			continue;
+		}
 		if ((ch >= 0x41) && (ch <= 0x5a) || //Если буква заглавная
 			(ch >= -64) && (ch <= -33))
 		{
@@ -137,10 +146,50 @@ void fixCase(string& str) {
 	}
 }
 
-void format(string &str) {
+void format(string& str) {
 	str = cutStr(str);
 	str = delDuplicate(str);
 	fixCase(str);
+}
+
+string filter(string str) {
+	string word, list;
+	char ch, localCh;
+	bool isRight = false;
+	for (int i = 0; i < size(str); i++)
+	{
+		ch = str[i];
+		if ((ch >= 0x20) && (ch <= 0x47) || // Проверка на знак пунктуации
+			(ch >= 0x3a) && (ch <= 0x40) ||
+			(ch >= 0x5b) && (ch <= 0x60) ||
+			(ch >= 0x7b) && (ch <= 0x7e) ||
+			(ch >= 0xf8) && (ch <= 0xfa))
+		{
+			for (int j = 1; j < size(word); j++)
+			{
+				if (word[0] == word[j]) 
+				{
+					isRight = true;
+					break;
+				}
+			}
+			if (isRight)
+			{
+				list += word + ", ";
+				isRight = false;
+			}
+			word = "\0";
+		} else
+		{
+			word += ch;
+		}
+	}
+	return list;
+}
+
+void writeToFile(string str)
+{
+	//todo
 }
 
 int main()
@@ -150,8 +199,11 @@ int main()
 
 	string str;
 	menu(str);
+	writeToFile(str);
 	cout << "Ваша строка:" << endl << str << endl << endl;
 	format(str);
-	cout << "Отформатированная строка:" << endl << str << endl;
+	cout << "Отформатированная строка:" << endl << str << endl << endl;
+	str = filter(str);
+	cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
 	system("pause");
 }
