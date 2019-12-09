@@ -11,13 +11,12 @@ ofstream fout;
 
 string path = "sample.txt";
 
-string fromFile(string& str) {
+void fromFile(string& str) {
 	try
 	{
 		fin.open(path);
 		getline(fin, str);
 		fin.close();
-		return str;
 	}
 	catch (const exception&)
 	{
@@ -62,7 +61,7 @@ int ans() {
 	return choice;
 }
 
-string menu(string &str)
+void menu(string &str)
 {
 	switch (ans())
 	{
@@ -70,23 +69,85 @@ string menu(string &str)
 		getline(cin, str);
 		break;
 	case 1:
-		str = fromFile(str);
+		fromFile(str);
 		break;
 	}
-	return str;
 }
 
-string delDuplicate(string &str) {
+string cutStr(string str) {
+	char ch;
+	string formattedStr;
+	for (int i = 0, j = 0; i < size(str); i++, j++)
+	{
+		ch = str[i];
+		if (ch == 0x2e) {
+			break;
+		}
+		formattedStr += str[i];
+	}
+	return formattedStr;
+}
+
+string delDuplicate(string str) {
+	char ch;
+	string formattedStr;
+	for (int i = 0, j = 0; i < size(str); i++, j++)
+	{
+		ch = str[i];
+		if (
+			( (ch >= 0x20) && (ch <= 0x47) || // Проверка на знак пунктуации
+			(ch >= 0x3a) && (ch <= 0x40) ||
+			(ch >= 0x5b) && (ch <= 0x60) ||
+			(ch >= 0x7b) && (ch <= 0x7e) ||
+			(ch >= 0xf8) && (ch <= 0xfa) &&
+			(ch != 0x2e) ) && // Не точка
+			(str[i] == str[i - 1]) // Дублируется
+			) 
+		{
+			continue;
+		}
+		formattedStr += str[i];
+	}
+	return formattedStr;
+}
+
+void fixCase(string& str) {
+	bool firstDone = false;
+	char ch;
 	for (int i = 0; i < size(str); i++)
 	{
-
+		ch = str[i];
+		if (
+			(ch >= 0x41) && (ch <= 0x5a) || //Проверка на буквы
+			(ch >= 0x61) && (ch <= 0x7a) ||
+			(ch >= 0xc0) && (ch <= 0xff)
+			) 
+		{
+			if (
+				(firstDone == false) && //Если первая встреченная буква строчная
+				((ch >= 0x61) && (ch <= 0x7a) ||
+				(ch >= 0xe0) && (ch <= 0xff))
+				)
+			{
+				ch -= 32;
+				str[i] = ch;
+				firstDone == true;
+				continue;
+			}
+			if ((ch >= 0x41) && (ch <= 0x5a) || //Если буква заглавная
+				(ch >= 0xc0) && (ch <= 0xdf))
+			{
+				ch += 32;
+				str[i] = ch;
+			}
+		}
 	}
-	return str;
 }
 
-string format(string &str) {
+void format(string &str) {
+	str = cutStr(str);
 	str = delDuplicate(str);
-	return str;
+	fixCase(str);
 }
 
 int main()
@@ -95,8 +156,9 @@ int main()
 	SetConsoleOutputCP(1251);
 
 	string str;
-	str = menu(str);
-	cout << "Ваша строка:" << endl << str << endl;
+	menu(str);
+	cout << "Ваша строка:" << endl << str << endl << endl;
 	format(str);
+	cout << "Отформатировання строка:" << endl << str << endl;
 	system("pause");
 }
