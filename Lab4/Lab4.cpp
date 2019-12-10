@@ -9,6 +9,7 @@ using namespace std;
 string samplePath = "sample.txt",
 	   outputPath = "output.txt";
 
+void doATask(string& str);
 
 //Работа с файлами
 void readFromFile(string& str) {
@@ -45,8 +46,8 @@ void clearFile()
 	try
 	{
 		fout.open(outputPath);
-		//fout << "\0";
 		fout.close();
+		cout << "Файл вывода очищен!" << endl;
 	}
 	catch (const exception&)
 	{
@@ -102,9 +103,11 @@ void menu(string& str)
 	{
 	case 0:
 		getline(cin, str);
+		doATask(str);
 		break;
 	case 1:
 		readFromFile(str);
+		doATask(str);
 		break;
 	case 2:
 		clearFile();
@@ -228,6 +231,22 @@ string filter(string str) {
 	return list;
 }
 
+void doATask(string& str)
+{
+	writeToFile("Исходная строка: " + str);
+	cout << "Ваша строка:" << endl << str << endl << endl;
+
+	format(str);
+	writeToFile("Отформатированная строка: " + str);
+	cout << "Отформатированная строка:" << endl << str << endl << endl;
+
+	str = filter(str);
+	writeToFile("Отфильтрованная строка: " + str);
+	cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
+
+	writeToFile("\n============================================================\n");
+}
+
 int main()
 {
 	SetConsoleCP(1251);
@@ -237,18 +256,6 @@ int main()
 	{
 		string str;
 		menu(str);
-		writeToFile("Исходная строка: " + str);
-		cout << "Ваша строка:" << endl << str << endl << endl;
-
-		format(str);
-		writeToFile("Отформатированная строка: " + str);
-		cout << "Отформатированная строка:" << endl << str << endl << endl;
-
-		str = filter(str);
-		writeToFile("Отфильтрованная строка: " + str);
-		cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
-
-		writeToFile("\n============================================================\n");
 		system("pause");
 	}
 }
