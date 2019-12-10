@@ -6,15 +6,14 @@
 
 using namespace std;
 
-ifstream fin;
-ofstream fout;
+string samplePath = "sample.txt",
+	   outputPath = "output.txt";
 
-string path = "sample.txt";
-
-void fromFile(string& str) {
+void readFromFile(string& str) {
 	try
 	{
-		fin.open(path);
+		ifstream fin;
+		fin.open(samplePath);
 		getline(fin, str);
 		fin.close();
 	}
@@ -69,7 +68,7 @@ void menu(string& str)
 		getline(cin, str);
 		break;
 	case 1:
-		fromFile(str);
+		readFromFile(str);
 		break;
 	}
 }
@@ -189,7 +188,17 @@ string filter(string str) {
 
 void writeToFile(string str)
 {
-	//todo
+	ofstream fout;
+	try
+	{
+		fout.open(outputPath, ofstream::app);
+		fout << str << endl;
+		fout.close();
+	}
+	catch (const exception&)
+	{
+		cout << "Ошибка открытия файла" << endl;
+	}
 }
 
 int main()
@@ -199,11 +208,14 @@ int main()
 
 	string str;
 	menu(str);
-	writeToFile(str);
+	writeToFile("Исходная строка: " + str);
 	cout << "Ваша строка:" << endl << str << endl << endl;
 	format(str);
+	writeToFile("Отформатированная строка: " + str);
 	cout << "Отформатированная строка:" << endl << str << endl << endl;
 	str = filter(str);
+	writeToFile("Отфильтрованная строка: " + str);
 	cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
+	writeToFile("\n============================================================\n");
 	system("pause");
 }
