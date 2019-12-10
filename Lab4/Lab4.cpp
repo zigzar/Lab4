@@ -122,9 +122,26 @@ void menu(string& str)
 string cutStr(string str) {
 	char ch;
 	string formattedStr;
+	bool firstDone = false;
 	for (int i = 0, j = 0; i < size(str); i++, j++)
 	{
 		ch = str[i];
+		if (
+			(firstDone == false) &&
+			(
+			(
+				(ch >= 0x20) && (ch <= 0x47) || // Проверка на знак пунктуации
+				(ch >= 0x3a) && (ch <= 0x40) ||
+				(ch >= 0x5b) && (ch <= 0x60) ||
+				(ch >= 0x7b) && (ch <= 0x7e) ||
+				(ch >= 0xf8) && (ch <= 0xfa)
+				) && (ch != 0x2e) // Не точка
+				)
+			)
+		{
+			continue; // Пропустить знаки пунктуации в начале строки
+		}
+		firstDone = true;
 		formattedStr += str[i];
 		if (ch == 0x2e) {
 			break;
@@ -143,8 +160,7 @@ string delDuplicate(string str) {
 			(ch >= 0x3a) && (ch <= 0x40) ||
 				(ch >= 0x5b) && (ch <= 0x60) ||
 				(ch >= 0x7b) && (ch <= 0x7e) ||
-				(ch >= 0xf8) && (ch <= 0xfa) &&
-				(ch != 0x2e)) && // Не точка
+				(ch >= 0xf8) && (ch <= 0xfa)) &&
 				(str[i] == str[i - 1]) // Дублируется
 			)
 		{
@@ -160,6 +176,7 @@ void fixCase(string& str) {
 	for (int i = 0; i < size(str); i++)
 	{
 		ch = str[i];
+		if (ch == 63 || ch == 33) firstDone = false; //Начать предложение после ! или ? с заглавной буквы
 		if (
 			(firstDone == false) && //Если первая встреченная буква строчная
 			((ch >= 0x61) && (ch <= 0x7a) ||
@@ -210,7 +227,9 @@ string filter(string str) {
 		{
 			for (int j = 1; j < size(word); j++)
 			{
-				if (word[0] == word[j])
+				localCh = word[j];
+				if (word[0] == localCh ||
+					word[0] == (localCh - 32) )
 				{
 					isRight = true;
 					break;
