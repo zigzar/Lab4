@@ -39,11 +39,25 @@ void writeToFile(string str)
 		cout << "Ошибка открытия файла" << endl;
 	}
 }
+void clearFile()
+{
+	ofstream fout;
+	try
+	{
+		fout.open(outputPath);
+		//fout << "\0";
+		fout.close();
+	}
+	catch (const exception&)
+	{
+		cout << "Ошибка открытия файла" << endl;
+	}
+}
 
 //Меню ввода строки
 int ans() {
 	int choice = 0;
-	int options = 2;
+	int options = 4;
 	int ch;
 	while (true) {
 		system("cls");
@@ -55,6 +69,12 @@ int ans() {
 
 		if (choice == 1) cout << "-> Прочитать из файла" << endl;
 		else  cout << "   Прочитать из файла" << endl;
+
+		if (choice == 2) cout << "-> Очистить файл вывода" << endl;
+		else  cout << "   Очистить файл вывода" << endl;
+
+		if (choice == 3) cout << "-> Выход" << endl;
+		else  cout << "   Выход" << endl;
 
 		ch = _getch();
 		if (ch == 224)
@@ -85,6 +105,12 @@ void menu(string& str)
 		break;
 	case 1:
 		readFromFile(str);
+		break;
+	case 2:
+		clearFile();
+		break;
+	case 3:
+		exit(0);
 		break;
 	}
 }
@@ -207,16 +233,22 @@ int main()
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	string str;
-	menu(str);
-	writeToFile("Исходная строка: " + str);
-	cout << "Ваша строка:" << endl << str << endl << endl;
-	format(str);
-	writeToFile("Отформатированная строка: " + str);
-	cout << "Отформатированная строка:" << endl << str << endl << endl;
-	str = filter(str);
-	writeToFile("Отфильтрованная строка: " + str);
-	cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
-	writeToFile("\n============================================================\n");
-	system("pause");
+	while (true)
+	{
+		string str;
+		menu(str);
+		writeToFile("Исходная строка: " + str);
+		cout << "Ваша строка:" << endl << str << endl << endl;
+
+		format(str);
+		writeToFile("Отформатированная строка: " + str);
+		cout << "Отформатированная строка:" << endl << str << endl << endl;
+
+		str = filter(str);
+		writeToFile("Отфильтрованная строка: " + str);
+		cout << "Cлова, в которых первая буква встречается ещё раз:" << endl << str << endl << endl;
+
+		writeToFile("\n============================================================\n");
+		system("pause");
+	}
 }
