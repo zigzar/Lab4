@@ -9,6 +9,8 @@ using namespace std;
 string samplePath = "sample.txt",
 	   outputPath = "output.txt";
 
+
+//Работа с файлами
 void readFromFile(string& str) {
 	try
 	{
@@ -23,7 +25,22 @@ void readFromFile(string& str) {
 		system("pause");
 	}
 }
+void writeToFile(string str)
+{
+	ofstream fout;
+	try
+	{
+		fout.open(outputPath, ofstream::app);
+		fout << str << endl;
+		fout.close();
+	}
+	catch (const exception&)
+	{
+		cout << "Ошибка открытия файла" << endl;
+	}
+}
 
+//Меню ввода строки
 int ans() {
 	int choice = 0;
 	int options = 2;
@@ -59,7 +76,6 @@ int ans() {
 	system("cls");
 	return choice;
 }
-
 void menu(string& str)
 {
 	switch (ans())
@@ -73,6 +89,7 @@ void menu(string& str)
 	}
 }
 
+//Форматирование строки
 string cutStr(string str) {
 	char ch;
 	string formattedStr;
@@ -86,7 +103,6 @@ string cutStr(string str) {
 	}
 	return formattedStr;
 }
-
 string delDuplicate(string str) {
 	char ch;
 	string formattedStr;
@@ -94,14 +110,14 @@ string delDuplicate(string str) {
 	{
 		ch = str[i];
 		if (
-			( (ch >= 0x20) && (ch <= 0x47) || // Проверка на знак пунктуации
+			((ch >= 0x20) && (ch <= 0x47) || // Проверка на знак пунктуации
 			(ch >= 0x3a) && (ch <= 0x40) ||
-			(ch >= 0x5b) && (ch <= 0x60) ||
-			(ch >= 0x7b) && (ch <= 0x7e) ||
-			(ch >= 0xf8) && (ch <= 0xfa) &&
-			(ch != 0x2e) ) && // Не точка
-			(str[i] == str[i - 1]) // Дублируется
-			) 
+				(ch >= 0x5b) && (ch <= 0x60) ||
+				(ch >= 0x7b) && (ch <= 0x7e) ||
+				(ch >= 0xf8) && (ch <= 0xfa) &&
+				(ch != 0x2e)) && // Не точка
+				(str[i] == str[i - 1]) // Дублируется
+			)
 		{
 			continue;
 		}
@@ -109,7 +125,6 @@ string delDuplicate(string str) {
 	}
 	return formattedStr;
 }
-
 void fixCase(string& str) {
 	bool firstDone = false;
 	char ch;
@@ -144,13 +159,13 @@ void fixCase(string& str) {
 		}
 	}
 }
-
 void format(string& str) {
 	str = cutStr(str);
 	str = delDuplicate(str);
 	fixCase(str);
 }
 
+//Фильтрация строки по заданию
 string filter(string str) {
 	string word, list;
 	char ch, localCh;
@@ -166,7 +181,7 @@ string filter(string str) {
 		{
 			for (int j = 1; j < size(word); j++)
 			{
-				if (word[0] == word[j]) 
+				if (word[0] == word[j])
 				{
 					isRight = true;
 					break;
@@ -178,27 +193,13 @@ string filter(string str) {
 				isRight = false;
 			}
 			word = "\0";
-		} else
+		}
+		else
 		{
 			word += ch;
 		}
 	}
 	return list;
-}
-
-void writeToFile(string str)
-{
-	ofstream fout;
-	try
-	{
-		fout.open(outputPath, ofstream::app);
-		fout << str << endl;
-		fout.close();
-	}
-	catch (const exception&)
-	{
-		cout << "Ошибка открытия файла" << endl;
-	}
 }
 
 int main()
